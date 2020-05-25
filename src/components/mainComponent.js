@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import Home from './homeComponent'
 import Menu from './MenuComponents'
-import DishDetail from './dishDetailComponent';
 import {DISHES} from '../shared/dishes'
 import Header from './headerComponent'
 import Footer from './footerComponent'
 import {Switch, Route, Redirect} from 'react-router-dom'
+import {COMMENTS} from '../shared/comments'
+import {LEADERS} from '../shared/leaders'
+import {PROMOTIONS} from '../shared/promotions'
+import Contact from './contactComponenet'
 
 class Main extends Component {
 
@@ -14,6 +17,9 @@ class Main extends Component {
 
     this.state = {
       dishes: DISHES,   //the state is lifted up to make it accessible to all the components
+      comments: COMMENTS,
+      promotions: PROMOTIONS,
+      leaders: LEADERS
     };
   }
 
@@ -22,7 +28,10 @@ class Main extends Component {
 
     const HomePage = () => {
       return (
-        <Home />
+        <Home dish={this.state.dishes.filter((dish) => dish.featured)[0] } 
+        promotions={this.state.promotions.filter((promo) => promo.featured)[0] }
+        leader={this.state.leaders.filter((leader) => leader.featured)[0] }
+        />  //filters out dish with featured true
       )
     }
   return (
@@ -31,6 +40,7 @@ class Main extends Component {
       <Switch>
         <Route path="/home" component={HomePage} />
         <Route exact path="/menu" component={() => <Menu dishes={this.state.dishes} />} />
+        <Route exact path="/contactus" component={Contact} />
         <Redirect to='/home' />    {/* automatic redirection to home if nothing is specified */}
       </Switch>
       <Footer />
