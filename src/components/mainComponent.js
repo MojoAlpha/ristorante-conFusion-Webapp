@@ -10,6 +10,7 @@ import {COMMENTS} from '../shared/comments'
 import {LEADERS} from '../shared/leaders'
 import {PROMOTIONS} from '../shared/promotions'
 import Contact from './contactComponenet'
+import About from './aboutComponent'
 
 class Main extends Component {
 
@@ -35,6 +36,12 @@ class Main extends Component {
       )
     }
 
+    const AboutPage = () => {
+      return (
+        <About leaders={this.state.leaders} />
+      )
+    }
+
     const DishWithId = ({match}) => {
      return (
        <DishDetail dish={this.state.dishes.filter((dish) => dish.id === parseInt(match.params.dishId, 10))[0] }
@@ -50,6 +57,7 @@ class Main extends Component {
         <Route path="/home" component={HomePage} />
         <Route exact path="/menu" component={() => <Menu dishes={this.state.dishes} />} />
         <Route path="/menu/:dishId" component={DishWithId} />
+        <Route path="/aboutus" component={AboutPage} />
         <Route exact path="/contactus" component={Contact} />
         <Redirect to='/home' />    {/* automatic redirection to home if nothing is specified */}
       </Switch>
