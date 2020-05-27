@@ -3,6 +3,11 @@ import {Breadcrumb, BreadcrumbItem, Button, Label,Row, Col} from 'reactstrap'
 import { Control, LocalForm, Errors} from 'react-redux-form'
 import {Link} from 'react-router-dom'
 
+const required = (val) => val && val.length
+const maxlength = (len) => (val) => !(val) || (val.length <= len)
+const minlength = (len) => (val) => !(val) || (val.length >= len)
+const isNumber = (val) => !isNaN(Number(val))
+const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)  //regex checking
 class Contact extends Component {    //using of react-redux forms
 
     constructor(props) {
@@ -65,8 +70,22 @@ class Contact extends Component {    //using of react-redux forms
                         <Row className="form-group">
                             <Label htmlFor="firstname" md={2}>First Name</Label>
                             <Col md={10}>
-                                <Control.text model=".firstname" id="firstname" name="firstname" placeholder="First Name"
+                                <Control.text model=".firstname" id="firstname" name="firstname" 
+                                placeholder="First Name"
                                 className="form-control"
+                                validators={{
+                                    required, minlength: minlength(3), maxlength: maxlength(15)
+                                }}
+                                />
+                                <Errors
+                                 className='text-danger'
+                                 model='.firstname'
+                                 show='touched'
+                                 messages={{
+                                     required: 'Required!!',
+                                     minlength: 'Must be greater than 2 characters!!',
+                                     maxlength: 'Must be 15 characters or less!!'
+                                 }}
                                 />
                             </Col>
                         </Row>
@@ -75,6 +94,19 @@ class Contact extends Component {    //using of react-redux forms
                             <Col md={10}>
                                 <Control.text model=".lastname" id="lastname" name="lastname" placeholder="Last Name" 
                                 className="form-control"
+                                validators={{
+                                    required, minlength: minlength(3), maxlength: maxlength(15)
+                                }}
+                                />
+                                <Errors
+                                 className='text-danger'
+                                 model='.lastname'
+                                 show='touched'
+                                 messages={{
+                                     required: 'Required!!',
+                                     minlength: 'Must be greater than 2 characters!!',
+                                     maxlength: 'Must be 15 characters or less!!'
+                                 }}
                                 />
                             </Col>
                         </Row>
@@ -83,6 +115,20 @@ class Contact extends Component {    //using of react-redux forms
                             <Col md={10}>
                                 <Control.text model=".telnum" id="telnum" name="telnum" placeholder="Tel. Number" 
                                 className="form-control"
+                                validators={{
+                                    required, minlength: minlength(6), maxlength: maxlength(12), isNumber
+                                }}
+                                />
+                                <Errors
+                                 className='text-danger'
+                                 model='.telnum'
+                                 show='touched'
+                                 messages={{
+                                     required: 'Required!!',
+                                     minlength: 'Must be greater than 2 numbers!!',
+                                     maxlength: 'Must be 12 numbers or less!!',
+                                     isNumber: 'Must be only numbers!!'
+                                 }}
                                 />
                             </Col>
                         </Row>
@@ -91,6 +137,18 @@ class Contact extends Component {    //using of react-redux forms
                             <Col md={10}>
                                 <Control.text model=".email" id="email" name="email" placeholder="Email" 
                                 className="form-control"
+                                validators={{
+                                    required, validEmail
+                                }}
+                                />
+                                <Errors
+                                 className='text-danger'
+                                 model='.email'
+                                 show='touched'
+                                 messages={{
+                                     required: 'Required!!',
+                                     validEmail: 'Email is invalid!!'
+                                 }}
                                 />
                             </Col>
                         </Row>
