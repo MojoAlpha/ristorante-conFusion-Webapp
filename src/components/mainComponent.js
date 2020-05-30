@@ -8,6 +8,7 @@ import {Switch, Route, Redirect, withRouter} from 'react-router-dom'
 import Contact from './contactComponenet'
 import About from './aboutComponent'
 import {connect} from 'react-redux'
+import { addComment } from '../redux/actionCreators'
 
 const mapStateToProps = state => {
     return {
@@ -17,6 +18,11 @@ const mapStateToProps = state => {
       leaders: state.leaders
     }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment))   //dispatch function obtains and acts as a transporter
+})
+
 class Main extends Component {
 
   render(){
@@ -40,6 +46,7 @@ class Main extends Component {
      return (
        <DishDetail dish={this.props.dishes.filter((dish) => dish.id === parseInt(match.params.dishId, 10))[0] }
        comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId, 10))}
+       addComment={this.props.addComment}
        />
      )
     }
@@ -63,4 +70,4 @@ class Main extends Component {
   //reactstrap is a library that enables the JS bootstrap components to work with react
 }
 
-export default withRouter(connect(mapStateToProps)(Main));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
