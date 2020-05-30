@@ -8,7 +8,7 @@ const required = (val) => val && val.length
 const maxlength = (len) => (val) => !(val) || (val.length <= len)
 const minlength = (len) => (val) => !(val) || (val.length >= len)
 
-function RenderDish({dish, comments}) {
+function RenderDish({dish, comments, addComment}) {
     return (
                 <div className='container'>
                 <div className='row'>
@@ -32,7 +32,9 @@ function RenderDish({dish, comments}) {
                 <Card className='col-md-5 ml-2'>
                     <CardBody>
                         <h1 className='mb-1'>Comments</h1>
-                        {RenderComments({comments})}
+                        <RenderComments comments={comments}
+                        addComment={addComment}
+                        dishId={dish.id} />
                         </CardBody>
                 </Card>
                 </div>
@@ -40,11 +42,11 @@ function RenderDish({dish, comments}) {
             )
 }
 
-function RenderComments({comments}) {
+function RenderComments({comments, addComment, dishId}) {
     const cmmntbox = comments.map((cmmnt) => {
         if(cmmnt != null){
         return (
-            <div key={cmmnt.id} className='mb-5'>
+            <div key={cmmnt.id} className='mb-4'>
                 <p className='mb-2'>-- {cmmnt.comment}</p>
                 <p>{cmmnt.author} , {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(cmmnt.date)))}</p>
             </div>
@@ -58,7 +60,7 @@ function RenderComments({comments}) {
     return(
         <div>
             {cmmntbox}
-            <SubmitComment />
+            <SubmitComment dishId={dishId} addComment={addComment} />
         </div>
     )
 }
@@ -83,8 +85,7 @@ class SubmitComment extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        console.log('Current State is : ' + JSON.stringify(values))
-        alert('Current State is : '+ JSON.stringify(values))
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.message)
     }
 
     render(){
@@ -150,7 +151,7 @@ class SubmitComment extends Component {
 const DishDetail = (props) => {
     if(props.dish != null) {
         return (
-            <RenderDish dish={props.dish} comments={props.comments} />
+            <RenderDish dish={props.dish} comments={props.comments} addComment={props.addComment} />
         )
     } else {
         return (
