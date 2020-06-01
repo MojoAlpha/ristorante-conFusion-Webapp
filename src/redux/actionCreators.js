@@ -15,8 +15,22 @@ export const fetchDishes = () => (dispatch) => {   //thunk returning a dispatch 
     dispatch(dishesLoading(true))
     
     return fetch(baseUrl + 'dishes')
+        .then( response => {
+            if(response.ok)     //ok property tells about if the server gave an ok response
+                return response   //this response is delivered to the next promise
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)   //error object generation
+                error.response = response
+                throw error
+            }
+        }, 
+        error => {      //in case we don't get response back from the server
+            var errMess = new Error(error.message)
+            throw errMess
+        })
         .then( response => response.json())
         .then( dishes => dispatch(addDishes(dishes)))
+        .catch( error => dispatch(dishesFailed(error.message)))
 }
 
 export const dishesLoading = () => ({
@@ -34,9 +48,23 @@ export const addDishes = (dishes) => ({
 })
 
 export const fetchComments = () => (dispatch) => {   //thunk returning a dispatch function    
-    return fetch(baseUrl + 'comments')               //fetching the data from the server
+    return fetch(baseUrl + 'comments') 
+    .then( response => {
+        if(response.ok)     //ok property tells about if the server gave an ok response
+            return response   //this response is delivered to the next promise
+        else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText)   //error object generation
+            error.response = response
+            throw error
+        }
+    }, 
+    error => {      //in case we don't get response back from the server
+        var errMess = new Error(error.message)
+        throw errMess
+    })              //fetching the data from the server
         .then( response => response.json())
         .then( comments => dispatch(addComments(comments)))
+        .catch( error => dispatch(commentsFailed(error.message)))
 }
 
 export const commentsFailed = (errmess) => ({
@@ -53,8 +81,23 @@ export const fetchPromos = () => (dispatch) => {   //thunk returning a dispatch 
     dispatch(promosLoading(true))
     
     return fetch(baseUrl + 'promotions')
+    .then( response => {
+        if(response.ok)     //ok property tells about if the server gave an ok response
+            return response   //this response is delivered to the next promise
+        else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText)   //error object generation
+            error.response = response
+            throw error
+        }
+    }, 
+    error => {      //in case we don't get response back from the server
+        var errMess = new Error(error.message)
+        throw errMess
+    })
         .then( response => response.json())
         .then( promos => dispatch(addPromos(promos)))
+        .catch( error => dispatch(promosFailed(error.message)))
+
 }
 
 export const promosLoading = () => ({
