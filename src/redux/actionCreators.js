@@ -1,15 +1,47 @@
 import * as ActionTypes from './actionTypes';
 import {baseUrl} from '../shared/baseUrl'
 
-export const addComment = (dishId, rating, author, comment) => ({
+export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,   //action type specified
-    payload: {  //data needed to be carried
+    payload: { comment: comment }
+})
+
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {   //redux thunk to add the comment to the server
+    const newComment = {
         dishId: dishId,
         rating: rating,
         author: author,
         comment: comment
     }
-})
+    newComment.date = new Date().toISOString()
+
+    return fetch(baseUrl + 'comments', {
+        method: 'POST',
+        body: JSON.stringify(newComment),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then( response => {
+        if(response.ok)     //ok property tells about if the server gave an ok response
+            return response   //this response is delivered to the next promise
+        else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText)   //error object generation
+            error.response = response
+            throw error
+        }
+    }, 
+    error => {      //in case we don't get response back from the server
+        var errMess = new Error(error.message)
+        throw errMess
+    })
+    .then( response => response.json())
+    .then(response => dispatch(addComment(response)))
+    .catch(error => {console.log('Post Comments ', error.message)
+        alert("Your Comment couldn't be posted \n Error : " + error.message)})
+}
 
 export const fetchDishes = () => (dispatch) => {   //thunk returning a dispatch function
     dispatch(dishesLoading(true))

@@ -10,7 +10,7 @@ const required = (val) => val && val.length
 const maxlength = (len) => (val) => !(val) || (val.length <= len)
 const minlength = (len) => (val) => !(val) || (val.length >= len)
 
-function RenderDish({dish, comments, addComment}) {
+function RenderDish({dish, comments, postComment}) {
     return (
                 <div className='container'>
                 <div className='row'>
@@ -35,7 +35,7 @@ function RenderDish({dish, comments, addComment}) {
                     <CardBody>
                         <h1 className='mb-1'>Comments</h1>
                         <RenderComments comments={comments}
-                        addComment={addComment}
+                        postComment={postComment}
                         dishId={dish.id} />
                         </CardBody>
                 </Card>
@@ -44,7 +44,7 @@ function RenderDish({dish, comments, addComment}) {
             )
 }
 
-function RenderComments({comments, addComment, dishId}) {
+function RenderComments({comments, postComment, dishId}) {
     const cmmntbox = comments.map((cmmnt) => {
         if(cmmnt != null){
         return (
@@ -62,7 +62,7 @@ function RenderComments({comments, addComment, dishId}) {
     return(
         <div>
             {cmmntbox}
-            <SubmitComment dishId={dishId} addComment={addComment} />
+            <SubmitComment dishId={dishId} postComment={postComment} />
         </div>
     )
 }
@@ -87,7 +87,7 @@ class SubmitComment extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.message)
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.message)
     }
 
     render(){
@@ -171,7 +171,7 @@ const DishDetail = (props) => {
     }
     else if(props.dish != null) {
         return (
-            <RenderDish dish={props.dish} comments={props.comments} addComment={props.addComment} />
+            <RenderDish dish={props.dish} comments={props.comments} postComment={props.postComment} />
         )
     } else {
         return (

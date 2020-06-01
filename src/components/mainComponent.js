@@ -8,8 +8,9 @@ import {Switch, Route, Redirect, withRouter} from 'react-router-dom'
 import Contact from './contactComponenet'
 import About from './aboutComponent'
 import {connect} from 'react-redux'
-import { addComment, fetchDishes, fetchComments, fetchPromos } from '../redux/actionCreators'
+import { fetchDishes, fetchComments, fetchPromos, postComment } from '../redux/actionCreators'
 import { actions } from 'react-redux-form'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 const mapStateToProps = state => {
     return {
@@ -21,7 +22,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)) ,  //dispatch function obtains and acts as a transporter
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)) ,  //dispatch function obtains and acts as a transporter
   fetchDishes: () => {dispatch(fetchDishes())},
   fetchComments: () => {dispatch(fetchComments())},
   fetchPromos: () => {dispatch(fetchPromos())},
@@ -65,7 +66,7 @@ class Main extends Component {
        errMess={this.props.dishes.errMess}
        comments={this.props.comments.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId, 10))}
        commmentErrMess={this.props.comments.errMess}
-       addComment={this.props.addComment}
+       postComment={this.props.postComment}
        />
      )
     }
@@ -73,6 +74,8 @@ class Main extends Component {
   return (
     <div>
       <Header />
+      <TransitionGroup>
+        <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
       <Switch>
         <Route path="/home" component={HomePage} />
         <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes} />} />
@@ -81,6 +84,8 @@ class Main extends Component {
         <Route exact path="/contactus" component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
         <Redirect to='/home' />    {/* automatic redirection to home if nothing is specified */}
       </Switch>
+      </CSSTransition>
+      </TransitionGroup>
       <Footer />
     </div>
   );
